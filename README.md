@@ -12,8 +12,8 @@ Contact
 # Overview
 Banking Application is a Java-based project designed to simulate basic banking operations. This application allows users to manage their accounts, perform transactions, and view account details. The goal of this project is to demonstrate object-oriented programming principles and provide a practical example of a simple banking system.
 
-Key Functionalities:
-User Registration & Login: Secure authentication for users.
+# Key Functionalities:
+User Registration & Login: Secure authentication for users /n
 Account Management: Create, update, and delete bank accounts.
 Transactions: Deposit, withdraw, and transfer funds between accounts.
 Transaction History: View detailed transaction history for each account.

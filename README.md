@@ -31,7 +31,7 @@ MySQL or any other SQL database
 Clone the Repository
 bash
 Copy code
-git clone https://github.com/your-username/bankingApplication.git
+git clone https://github.com/cvrkn/BankingApplication.git
 cd bankingApplication
 Setup Database
 Create a MySQL database:

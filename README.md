@@ -85,9 +85,9 @@ Submit a pull request.
 This project is licensed under the MIT License - see the LICENSE file for details.
 
 # Contact
-Author: Your Name
-Email: your-email@example.com
-LinkedIn: Your LinkedIn
+Author: Kaushik Narayanan C VR
+Email: kaushiknarayanancvr.com
+LinkedIn: linkedin.com/in/cvrkn/
 Feel free to reach out for any questions or collaboration opportunities!
 
 # Notes

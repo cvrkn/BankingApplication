@@ -11,19 +11,23 @@ public class myJDBC {
 
     public static user validateLogin(String username, String password){
         try{
+            String Salt;
+            String HashedPassword;
             Connection con = DriverManager.getConnection(DB_URL,DB_Username,DB_password);
-            PreparedStatement preparedStatement = con.prepareStatement(
-                    "select * from users where username =? and password = ?"
+            PreparedStatement getSalt = con.prepareStatement(
+                    "select * from users where username =? "
             );
-            preparedStatement.setString(1,username);
-            preparedStatement.setString(2,password);
-
-            ResultSet resultSet = preparedStatement.executeQuery();
-
-            if(resultSet.next()){
+            getSalt.setString(1,username);
+            ResultSet resultSet = getSalt.executeQuery();
+            if(resultSet.next()) {
+                Salt = resultSet.getString("salt");
                 int userId = resultSet.getInt("id");
                 BigDecimal currentBalance = resultSet.getBigDecimal("currentBalance");
-                return new user(userId,username,password,currentBalance);
+                HashedPassword = resultSet.getString("password");
+                if (passwordHandler.verifyPassword(password, Salt, HashedPassword)) {
+                    return new user(userId, username, null, currentBalance);
+                }
+                return  null;
             }
 
         } catch (SQLException e) {
@@ -31,15 +35,47 @@ public class myJDBC {
         }
         return null;
     }
+    //confrimation
+    public static boolean validateLogin(String username, String password,boolean bool){
+        try{
+            String Salt;
+            String HashedPassword;
+            Connection con = DriverManager.getConnection(DB_URL,DB_Username,DB_password);
+            PreparedStatement getSalt = con.prepareStatement(
+                    "select * from users where username =? "
+            );
+            getSalt.setString(1,username);
+            ResultSet resultSet = getSalt.executeQuery();
+            if(resultSet.next()) {
+                Salt = resultSet.getString("salt");
+                BigDecimal currentBalance = resultSet.getBigDecimal("currentBalance");
+                HashedPassword = resultSet.getString("password");
+                if (passwordHandler.verifyPassword(password, Salt, HashedPassword)) {
+                    return true;
+                }
+                return  false;
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
     public static Boolean register(String username, String password){
         if(!CheckUser(username)){
             try{
                 Connection connection = DriverManager.getConnection(DB_URL,DB_Username,DB_password);
-                PreparedStatement preparedStatement = connection.prepareStatement("insert into users(username,password,currentBalance)"+
-                        "values(?,?,0.0)"
+
+                //hashing password
+                String salt = passwordHandler.generateSalt();
+                String HashedPassword = passwordHandler.hashPassword(password,salt);
+
+                PreparedStatement preparedStatement = connection.prepareStatement("insert into users(username,password,currentBalance,salt)"+
+                        "values(?,?,0.0,?)"
                 );
                 preparedStatement.setString(1,username);
-                preparedStatement.setString(2,password);
+                preparedStatement.setString(2,HashedPassword);
+                preparedStatement.setString(3,salt);
                 preparedStatement.executeUpdate();
                 return true;
 
@@ -135,7 +171,7 @@ public class myJDBC {
                         null
                 );
                  //update
-                curuser.setCurrentBalance(curuser.getCurrentBalance().add(BigDecimal.valueOf(amount)));
+                curuser.setCurrentBalance(curuser.getCurrentBalance().add(BigDecimal.valueOf(-amount)));
                 updateCurrentBalance(curuser);
 
                 receiverUser.setCurrentBalance(receiverUser.getCurrentBalance().add(BigDecimal.valueOf(amount)));

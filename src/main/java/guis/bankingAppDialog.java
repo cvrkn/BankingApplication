@@ -15,11 +15,16 @@ public class bankingAppDialog extends JDialog implements ActionListener {
 
     private user curuser;
     private bankingAppGui bankingAppGui0;
-    private JLabel balanceLabel,enterAmountLabel,enterUserLabel;
+    private JLabel balanceLabel,enterAmountLabel,enterUserLabel,confirmPasswordLabel;
     private JTextField enterAmountField,enterUserField;
     private JButton actionButton;
     private JPanel pastTransactionsPanel;
     private ArrayList<Transaction> pastTransactions;
+    //for confirmation
+    private bankingAppDialog bankingAppDialog0;
+    private JPasswordField confirmPasswordField;
+    public static boolean verified = false;
+
 
     public bankingAppDialog(bankingAppGui bankingAppGui0, user curuser){
 
@@ -38,6 +43,38 @@ public class bankingAppDialog extends JDialog implements ActionListener {
         this.bankingAppGui0 = bankingAppGui0;
         this.curuser = curuser;
     }
+    public bankingAppDialog(bankingAppDialog bankingAppDialog0, user curuser){
+
+        setSize(400,200);
+
+        setModal(true); //adds focus to dialog (cant access anything else)
+
+        setLocationRelativeTo(bankingAppDialog0);
+
+        setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+
+        setResizable(false);
+        setLayout(null);//enables us to manual position and size ele
+
+
+
+        this.bankingAppDialog0 = bankingAppDialog0;
+        this.curuser = curuser;
+
+    }
+    //confirmation
+    public void addConfirmPassword(){
+        confirmPasswordLabel = new JLabel("Password:");
+        confirmPasswordLabel.setBounds(15,20,getWidth()-30,24);
+        confirmPasswordLabel.setFont(new Font("dialog",Font.PLAIN,20));
+
+        add(confirmPasswordLabel);
+        //password passwordField
+        confirmPasswordField = new JPasswordField();
+        confirmPasswordField.setBounds(15,50,getWidth()-50,40);
+        confirmPasswordField.setFont(new Font("dialog",Font.PLAIN,28));
+        add(confirmPasswordField);
+    }
     public void addCurrentBalanceAndAmount(){
         balanceLabel = new JLabel("Balance: ₹"+ curuser.getCurrentBalance() );
         balanceLabel.setBounds(0,10,getWidth()-20,20);
@@ -55,12 +92,24 @@ public class bankingAppDialog extends JDialog implements ActionListener {
         enterAmountField.setBounds(15,80,getWidth()-50,40);
         enterAmountField.setFont(new Font("dialog", Font.BOLD,20));
         enterAmountField.setHorizontalAlignment(SwingConstants.CENTER);
+//
+        enterAmountField.setText("10");
+//
         add(enterAmountField);
 
     }
     public void addActionButton(String actionButtonType){
         actionButton = new JButton(actionButtonType);
         actionButton.setBounds(15,300,getWidth()-50,40);
+        actionButton.setFont(new Font("dialog", Font.BOLD,20));
+        actionButton.setHorizontalAlignment(SwingConstants.CENTER);
+        actionButton.addActionListener(this);
+        add(actionButton);
+
+    }
+    public void addActionButton(String actionButtonType,Boolean flag){
+        actionButton = new JButton(actionButtonType);
+        actionButton.setBounds(15,100,getWidth()-50,40);
         actionButton.setFont(new Font("dialog", Font.BOLD,20));
         actionButton.setHorizontalAlignment(SwingConstants.CENTER);
         actionButton.addActionListener(this);
@@ -77,7 +126,10 @@ public class bankingAppDialog extends JDialog implements ActionListener {
         enterUserField = new JTextField();
         enterUserField.setBounds(15, 190, getWidth() - 50, 40);
         enterUserField.setFont(new Font("dialog", Font.BOLD, 20));
-        enterUserLabel.setHorizontalAlignment(SwingConstants.CENTER);
+        enterUserField.setHorizontalAlignment(SwingConstants.CENTER);
+//testing
+        enterUserField.setText("kaushik");
+//
         add(enterUserField);
 
     }
@@ -166,6 +218,7 @@ public class bankingAppDialog extends JDialog implements ActionListener {
         }
     }
     private void handleTransfer(user curuser,String receiver, float amount){
+
         if(myJDBC.transfer(curuser,receiver,amount)){
             JOptionPane.showMessageDialog(this,"Transfer Successful");
             resetFieldsAndUpdateCurrentBalance();
@@ -193,6 +246,12 @@ public class bankingAppDialog extends JDialog implements ActionListener {
     @Override
     public void actionPerformed(ActionEvent e) {
         String buttonPressed = e.getActionCommand();
+        if(buttonPressed.equalsIgnoreCase("confirm")){
+            String passsword = String.valueOf(confirmPasswordField.getPassword());
+            verified = myJDBC.validateLogin(curuser.getUsername() , passsword, true);
+            this.dispose();
+            return;
+        }
         float amountVal = Float.parseFloat(enterAmountField.getText());
 
         if(buttonPressed.equalsIgnoreCase("deposit")){
@@ -209,8 +268,21 @@ public class bankingAppDialog extends JDialog implements ActionListener {
             }
             else{
                 String RecivingUser = enterUserField.getText();
-
-                handleTransfer(curuser,RecivingUser,amountVal);
+                if(curuser.getUsername().equals(RecivingUser)){
+                    JOptionPane.showMessageDialog(this,"Error:Invalid Username");
+                    return;
+                }
+                bankingAppDialog bankingAppDialog0 = new bankingAppDialog(this,curuser);
+                bankingAppDialog0.setTitle("Confirmation");
+                bankingAppDialog0.addConfirmPassword();
+                bankingAppDialog0.addActionButton("Confirm",true);
+                bankingAppDialog0.setVisible(true);
+                if(verified) {
+                    handleTransfer(curuser, RecivingUser, amountVal);
+                }
+                else{
+                    JOptionPane.showMessageDialog(this,"Error:Verification Failed");
+                }
             }
         }
 

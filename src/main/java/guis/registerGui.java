@@ -106,7 +106,7 @@ public class registerGui extends baseFrame {
 
     }
     private boolean validate(String username,String password ,String rePassword){
-        return username.length() >= 6 && password.length() >= 4 && password.equals(rePassword);
+        return username.length() >= 4 && password.length() >= 4 && password.equals(rePassword);
     }
 }
 

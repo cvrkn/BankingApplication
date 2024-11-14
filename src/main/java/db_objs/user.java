@@ -25,9 +25,11 @@ public class user {
         return username;
     }
 
+    /*
     public String getPassword() {
         return password;
     }
+    */
 
     public BigDecimal getCurrentBalance() {
         return currentBalance;

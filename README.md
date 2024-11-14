@@ -86,8 +86,11 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 
 # Contact
 Author: Kaushik Narayanan C VR
+
 Email: kaushiknarayanancvr.com
+
 LinkedIn: linkedin.com/in/cvrkn/
+
 Feel free to reach out for any questions or collaboration opportunities!
 
 # Notes

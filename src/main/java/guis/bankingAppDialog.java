@@ -93,7 +93,7 @@ public class bankingAppDialog extends JDialog implements ActionListener {
         enterAmountField.setFont(new Font("dialog", Font.BOLD,20));
         enterAmountField.setHorizontalAlignment(SwingConstants.CENTER);
 //
-        enterAmountField.setText("10");
+        //enterAmountField.setText("10");
 //
         add(enterAmountField);
 
@@ -127,9 +127,7 @@ public class bankingAppDialog extends JDialog implements ActionListener {
         enterUserField.setBounds(15, 190, getWidth() - 50, 40);
         enterUserField.setFont(new Font("dialog", Font.BOLD, 20));
         enterUserField.setHorizontalAlignment(SwingConstants.CENTER);
-//testing
-        enterUserField.setText("kaushik");
-//
+
         add(enterUserField);
 
     }
@@ -196,7 +194,6 @@ public class bankingAppDialog extends JDialog implements ActionListener {
         }
         add(scrollPane);
     }
-
     private void handleTransaction(String transactionType,float amountVal){
         Transaction transaction;
         if(transactionType.equalsIgnoreCase("Deposit")){

@@ -34,7 +34,7 @@ public class loginGui extends baseFrame{
         usernameField.setFont(new Font("dialog",Font.PLAIN,28));
 //for testing while developemnt
 
-        usernameField.setText("kaush1");
+        //usernameField.setText("kaush1");
 
 //remove while deployment
         add(usernameField);
@@ -51,7 +51,7 @@ public class loginGui extends baseFrame{
         passwordField.setFont(new Font("dialog",Font.PLAIN,28));
 //for testing while developemnt
 
-        passwordField.setText("1234");
+        //passwordField.setText("1234");
 
 //remove while deployment
         add(passwordField);
